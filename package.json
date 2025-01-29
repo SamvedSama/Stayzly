@@ -1,0 +1,19 @@
+{
+  "name": "stayzly",
+  "version": "1.0.0",
+  "description": "Welcome to Stayzly, a modern solution for travelers and hosts to connect seamlessly.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Samved",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "ejs-mate": "^4.0.0",
+    "express": "^4.21.2",
+    "method-override": "^3.0.0",
+    "mongoose": "^8.9.5"
+  }
+}

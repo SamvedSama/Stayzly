@@ -1,0 +1,36 @@
+<% layout("/layouts/boilerplate.ejs") %>
+<div class="row mt-5">
+    <div class="col-8 offset-2">
+        <h2>Edit Listing</h2>
+        <form action="/listings" method="POST">
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" name="title" placeholder="Add a Catchy Title" value="<%= listing.title %>" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea type="text" name="description" placeholder="Describe more about this place" class="form-control"><%= listing.description %></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Image URL</label>
+                <input type="text" name="image" placeholder="Attach Image URL" value="<%= listing.image %>" class="form-control">
+            </div>
+            <div class="row">
+                <div class="mb-3 col-md-4">
+                    <label for="price" class="form-label">Price</label>
+                    <input type="text" name="title" placeholder="1500" value="<%= listing.price %>" class="form-control">
+                </div>
+                <div class="mb-3 col-md-8">
+                    <label for="country" class="form-label">Country</label>
+                    <input type="text" name="title" placeholder="India" value="<%= listing.country %>" class="form-control">
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="location" class="form-label">Location</label>
+                <input type="text" name="title" placeholder="Bengaluru" value="<%= listing.location %>" class="form-control">
+            </div>
+            <button class="btn btn-dark edit-btn mt-2">Add</button>
+        </form>
+    </div>
+</div>
