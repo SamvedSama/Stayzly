@@ -7,6 +7,9 @@ const PORT = 8080;
 const methodOverride = require("method-override")
 const ejsMate = require("ejs-mate");
 const Listing = require("./models/listing");
+const wrapAsync = require("./utils/wrapAsync");
+const ExpressError = require("./utils/ExpressError");
+const {listingSchema} = require("./schema");
 
 const MONGO_URL = "mongodb://localhost:27017/Stayzly";
 
@@ -29,6 +32,16 @@ async function main(){
 app.get("/",(req,res)=>{
     res.send("Server Working");
 })
+
+const validateListing = (req,res,next)=>{
+    let error = listingSchema.validate(req.body)
+    if(error){
+        let errMsg = error.details.map(el => el.message).join(", ");
+        throw new ExpressError(errMsg,400);
+    }else{
+        next();
+    }
+}
 
 // app.get("/testListing",async (req,res)=>{
 //     const listing = new Listing({
@@ -57,38 +70,48 @@ app.get("/listings/new",(req,res)=>{
 })
 
 //Show
-app.get("/listings/:id",async (req,res)=>{
+app.get("/listings/:id",wrapAsync(async (req,res)=>{
     let {id} = req.params;
     const listing = await Listing.findById(id);
     res.render("listings/show.ejs",{listing});
-})
+}))
 
 //Edit Route
-app.get("/listings/:id/edit",async (req,res)=>{
+app.get("/listings/:id/edit",wrapAsync(async (req,res)=>{
     let {id} = req.params;
     const listing = await Listing.findById(id);
     res.render("listings/edit.ejs",{listing});
-})
+}))
 
 //Create Route
-app.post("/listings",async (req,res)=>{
+app.post("/listings",validateListing,wrapAsync(async (req,res)=>{
     const listing = new Listing(req.body);
     await listing.save();
     res.redirect("/listings");
-})
+}))
 
 //Update Route
-app.put("/listings/:id",async (req,res)=>{
+app.put("/listings/:id",validateListing,wrapAsync(async (req,res)=>{
     let {id} = req.params;
     await Listing.findByIdAndUpdate(id,{...req.body});
     res.redirect(`/listings/${id}`)
-})
+}))
 
 //Delete Route
-app.delete("/listings/:id",async(req,res)=>{
+app.delete("/listings/:id",wrapAsync(async(req,res)=>{
     let {id} = req.params;
     await Listing.findByIdAndDelete(id);
     res.redirect("/listings");
+}))
+
+app.all("*",(req,res,next)=>{
+    next(new ExpressError("Page Not Found!",404));
+})
+
+app.use((err,req,res,next)=>{
+    let {statusCode = 500,message = "Something went wrong"} = err;
+    // res.status(statusCode).send(message);
+    res.status(statusCode).render("listings/error.ejs",{message});
 })
 
 app.listen(PORT,()=>{
